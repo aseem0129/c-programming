@@ -1,0 +1,69 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+// A class to represent a two-dimensional point
+class Point {
+private:
+  int x;
+  int y;
+
+public:
+  Point(int x, int y) : x(x), y(y) {}
+
+  int getX() const { return x; }
+  int getY() const { return y; }
+
+  // Overload the == operator to compare points
+  bool operator==(const Point& other) const {
+    return x == other.x && y == other.y;
+  }
+};
+
+// A class to represent a rectangle
+class Rectangle {
+private:
+  Point topLeft;
+  Point bottomRight;
+
+public:
+  Rectangle(const Point& topLeft, const Point& bottomRight)
+    : topLeft(topLeft), bottomRight(bottomRight) {}
+
+  // Overload the stream insertion operator to print rectangles
+  friend ostream& operator<<(ostream& out, const Rectangle& r) {
+    out << "[(" << r.topLeft.getX() << "," << r.topLeft.getY() << "),("
+        << r.bottomRight.getX() << "," << r.bottomRight.getY() << ")]";
+    return out;
+  }
+};
+
+// A function to find the intersection of two rectangles
+Rectangle intersect(const Rectangle& r1, const Rectangle& r2) {
+  int x1 = max(r1.topLeft.getX(), r2.topLeft.getX());
+  int y1 = max(r1.topLeft.getY(), r2.topLeft.getY());
+  int x2 = min(r1.bottomRight.getX(), r2.bottomRight.getX());
+  int y2 = min(r1.bottomRight.getY(), r2.bottomRight.getY());
+
+  // If the rectangles don't intersect, return a rectangle with no area
+  if (x1 >= x2 || y1 >= y2) return Rectangle(Point(0, 0), Point(0, 0));
+
+  // Otherwise, return the intersection
+  return Rectangle(Point(x1, y1), Point(x2, y2));
+}
+
+int main() {
+  vector<Rectangle> rectangles = {
+    Rectangle(Point(1, 1), Point(4, 4)),
+    Rectangle(Point(2, 2), Point(5, 5)),
+    Rectangle(Point(3, 3), Point(6, 6))
+  };
+
+  // Print the intersection of all rectangles in the vector
+  cout << "Intersection: " << intersect(rectangles) << endl;
+
+  return 0;
+}
